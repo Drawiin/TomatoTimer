@@ -1,10 +1,11 @@
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,11 +36,11 @@ fun App() {
                 }
                 AnimatedVisibility(showContent) {
                     Column(
-                        Modifier.fillMaxWidth(),
+                        Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(painterResource("compose-multiplatform.xml"), null)
-                        Text("Platform: ${platformProvider.platform()}")
+                        Text("Platform: ${platformProvider.platform()}", style = MaterialTheme.typography.headlineSmall)
                     }
                 }
             }
