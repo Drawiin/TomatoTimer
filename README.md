@@ -22,3 +22,6 @@ Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-mu
   - **Language:** Kotlin
 - [ ]  **Project Structure:** Create a modular project structure for your shared code, Android, and iOS targets.
 - [ ]  **Basic UI:** Design and implement basic structural layouts for your screens in Compose Multiplatform.
+
+## Architecture
+Simple architecture with MVVM pattern.
