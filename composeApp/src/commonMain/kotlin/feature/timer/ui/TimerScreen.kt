@@ -2,11 +2,14 @@ package feature.timer.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +30,8 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import feature.config.ui.ConfigScreen
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 
 @Immutable
 data class TimerScreen(
@@ -38,6 +44,15 @@ data class TimerScreen(
         val navigator = LocalNavigator.currentOrThrow
         val model = getScreenModel<TimerModel>()
         val state = model.state.collectAsState()
+        LaunchedEffect(key) {
+            model.effects
+                .flowOn(Dispatchers.Main.immediate)
+                .collect {
+                    when (it) {
+                        TimerEffect.OpenSettings -> navigator.push(ConfigScreen())
+                    }
+                }
+        }
 
         Scaffold(
             topBar = {
@@ -54,7 +69,7 @@ data class TimerScreen(
                     },
                     actions = {
                         IconButton(onClick = {
-                            navigator.push(ConfigScreen())
+                            model.onAction(TimerAction.SettingsTap)
                         }) {
                             Icon(Icons.Default.Settings, contentDescription = "Settings")
                         }
@@ -71,6 +86,28 @@ data class TimerScreen(
                     state.value.time,
                     style = MaterialTheme.typography.titleLarge
                 )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(
+                        4.dp,
+                        Alignment.CenterHorizontally
+                    )
+                ) {
+                    when (state.value.state) {
+                        TimerState.State.PAUSE -> IconButton(onClick = {
+                            model.onAction(TimerAction.Start)
+                        }) {
+                            Icon(Icons.Default.PlayArrow, contentDescription = "Play")
+                        }
+
+                        TimerState.State.RUNNING -> IconButton(onClick = {
+                            model.onAction(
+                                TimerAction.Pause
+                            )
+                        }) {
+                            Icon(Icons.Default.Pause, contentDescription = "Pause")
+                        }
+                    }
+                }
             }
         }
     }

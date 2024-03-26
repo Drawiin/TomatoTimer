@@ -5,6 +5,6 @@ import feature.timer.ui.TimerModel
 import org.koin.dsl.module
 
 val timerModule = module {
-    single { TimerRepository(120) }
+    single { TimerRepository() }
     factory { TimerModel(get()) }
 }
